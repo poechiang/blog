@@ -30,5 +30,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "antd": "^4.3.4",
+    "extend": "^3.0.2",
+    "less": "^3.11.3",
+    "less-loader": "^6.1.1"
   }
 }

@@ -1,0 +1,3 @@
+const APPEND_ARTICLE = 11;
+
+export {APPEND_ARTICLE};
