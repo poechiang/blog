@@ -1,0 +1,125 @@
+/**
+ *  blog less 0.1.0
+ *
+ *    auth:poechiang
+ *
+ *    date:2020-06-20 04:43
+ *
+ **/
+@import "animation";
+@font:-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+sans-serif;
+@codeFont:source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+monospace;
+html,body,p,ul,dl,ol,li,dd,dt,h1,h2,h3,h4,h5,h6,fieldset{
+  margin:0;
+  padding:0;
+}
+html{
+  font-size: 625%;
+  body{
+    font-size: .16rem;
+  }
+}
+body {
+  font-family: @font;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+code {
+  font-family: @codeFont;
+}
+@marginDimension:1000;
+each(range(@marginDimension), {
+  .m-@{value} {
+    margin: (@value / 100rem);
+  }
+  .ma-@{value} {
+    margin: (@value / 100rem) auto;
+  }
+  .mh-@{value} {
+    margin-left: (@value / 100rem);
+    margin-right: (@value / 100rem);
+  }
+  .mv-@{value} {
+    margin-top: (@value / 100rem);
+    margin-bottom: (@value / 100rem);
+  }
+  .ml-@{value} {
+    margin-left: (@value / 100rem);
+  }
+  .mt-@{value} {
+    margin-top: (@value / 100rem);
+  }
+  .mr-@{value} {
+    margin-right: (@value / 100rem);
+  }
+  .mb-@{value} {
+    margin-bottom: (@value / 100rem);
+  }
+  .p-@{value}{
+    padding:(@value / 100rem);
+  }
+  .ph-@{value} {
+    padding-left: (@value / 100rem);
+    padding-right: (@value / 100rem);
+  }
+  .pv-@{value} {
+    padding-top: (@value / 100rem);
+    padding-bottom: (@value / 100rem);
+  }
+  .pl-@{value} {
+    padding-left: (@value / 100rem);
+  }
+  .pt-@{value} {
+    padding-top: (@value / 100rem);
+  }
+  .pr-@{value} {
+    padding-right: (@value / 100rem);
+  }
+  .pb-@{value} {
+    padding-bottom: (@value / 100rem);
+  }
+})
+svg.icon{
+  fill:currentColor;
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: -0.25em;
+}
+@horizontals:left,center,right,none,unset,initial,inherit;
+each(@horizontals,{
+  .hor-@{value}{
+    text-align: @value;
+  }
+})
+.App {
+  text-align: center;
+
+  .App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+
+    .App-logo {
+      height: 40vmin;
+      pointer-events: none;
+      @media (prefers-reduced-motion: no-preference) {
+        & {
+          animation: App-logo-spin infinite 20s linear;
+        }
+      }
+    }
+    .App-link {
+      color: #61dafb;
+    }
+  }
+}
+
+
