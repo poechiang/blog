@@ -19,9 +19,7 @@ import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <Provider>
-    <React.StrictMode>
       <App />
-    </React.StrictMode>
   </Provider>,
   document.getElementById('root')
 );

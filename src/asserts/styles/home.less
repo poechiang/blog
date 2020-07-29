@@ -1,13 +1,71 @@
 #home.page-wrap{
   .ant-layout-sider{
-    padding: .24rem;
-    margin:.24rem;
     background-color: transparent;
     .ant-avatar {
       svg.icon {
         width: .6rem;
         height: .6rem;
         margin: .1rem;
+      }
+    }
+  }
+  .ant-layout-content{
+    .db-0{
+      fill: lighten(#61DAFB,30%);
+      &.fixed{
+        fill:#ffffff2b;
+      }
+    }
+    .db-1{
+      fill: lighten(#61DAFB,20%);
+    }
+    .db-2{
+      fill: lighten(#61DAFB,10%);
+    }
+    .db-3{
+      fill: #61DAFB;
+    }
+    .db-4{
+      fill: darken(#61DAFB,10%);
+    }
+    .db-5{
+      fill: darken(#61DAFB,20%);
+    }
+    .ant-tabs-right{
+      .ant-tabs-nav {
+        width:.68rem;
+        margin-left: .12rem;
+        border-left: 1px solid #303030;;
+      }
+      .ant-tabs-content-holder{
+        width:calc(100% - .8rem);
+        border-right: none;
+        .ant-tabs-content {
+          padding-right: 0;
+          .ant-tabs-tabpane {
+            padding-right: 0;
+            text-align: center;
+            overflow-x: auto;
+          }
+        }
+      }
+    }
+    .articles{
+      .ant-timeline.ant-timeline-label {
+        .ant-timeline-item-head{
+          left:1.5rem;
+        }
+        .ant-timeline-item-label{
+          width:1.3rem;
+          margin-top:.03rem;
+        }
+        .ant-timeline-item-tail {
+          left: 1.5rem;
+        }
+        .ant-timeline-item-left .ant-timeline-item-content {
+          left: 1.56rem;
+          width: calc(100% - 1.82rem);
+        }
       }
     }
   }
