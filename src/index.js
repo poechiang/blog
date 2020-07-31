@@ -1,24 +1,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import Provider from "./lib/Redux";
+
+import {createStore} from "redux";
+import {Provider} from "react-redux";
+
+
+import Reducer from "./lib/redux/Reducer";
+
+import * as serviceWorker from './serviceWorker';
+
 
 import 'antd/dist/antd.dark.less';
 import './asserts/styles/global.less';
 
 
+
 import App from './App';
 
+let store = createStore(Reducer,{ArticleList:[]})
 
-
-
-
-
-
-import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-  <Provider>
+  <Provider store={store}>
       <App />
   </Provider>,
   document.getElementById('root')
