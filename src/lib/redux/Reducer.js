@@ -17,6 +17,16 @@ const Article = (state=[],action)=>{
       return state;
   }
 }
-let Reducer = combineReducers({ArticleList,Article})
+const post = (state={},action)=>{
+  switch(action.type){
+    case actions.UPDATE_POST_DATA:
+      let {type,...data} = action;
+      return Object.assign({},state,data)
+    default:
+      return state;
+  }
+}
+
+let Reducer = combineReducers({ArticleList,Article,post})
 
 export default Reducer;

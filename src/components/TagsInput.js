@@ -5,7 +5,7 @@ import {Tag, Input} from "antd";
 class TagsInput  extends React.Component{
   constructor(props) {
     super(props);
-    this.state = {tags:props.tags,value:props.value,limit:props.limit||0};
+    this.state = {tags:props.tags||[],value:props.value,limit:props.limit||0};
     this.handleInput = this.handleInput.bind(this)
     this.handleKeyDown = this.handleKeyDown.bind(this)
     this.removeTag = this.removeTag.bind(this)
@@ -21,19 +21,22 @@ class TagsInput  extends React.Component{
         if(!value){
           return;
         }
+        let tags
         if (e.shiftKey){
-          this.setState({tags:[...this.state.tags,value],value:''})
+          tags = [...this.state.tags,value]
         }
         else{
-          this.setState({tags:[...this.state.tags,...value.split(' ')],value:''})
+          tags = [...this.state.tags,...value.split(' ')]
         }
-        
+        this.setState({tags,value:''})
+        this.props.onChange({value:tags})
         break;
       case 'Backspace':
         if (!this.state.vaue) {
           let tags = this.state.tags;
           tags.pop();
           this.setState({tags})
+          this.props.onChange({value:tags})
         }
         break;
       default:
@@ -43,6 +46,7 @@ class TagsInput  extends React.Component{
   removeTag(tag,index){
     let tags = this.state.tags.filter((item,i)=>(i!==index))
     this.setState({tags})
+    this.props.onChange({value:tags})
   }
   render(){
     const {className,style} = this.props;

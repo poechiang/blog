@@ -13,6 +13,9 @@ class Post extends Component{
     super(props);
     this.state = {contentShown:true};
     this.doPost = this.doPost.bind(this);
+    this.handleTitleChange = this.handleTitleChange.bind(this);
+    this.handleCatagoryChange = this.handleCatagoryChange.bind(this);
+    this.handleTagsChange = this.handleTagsChange.bind(this);
   }
   componentDidMount() {
     
@@ -22,7 +25,7 @@ class Post extends Component{
       previewTheme:'dark',
       height:'auto',
       minHeight:100,
-      markdown: '',
+      markdown: this.props.post.content||'',
       path:'/static/lib/',
       codeFold:true,
       lineClamp:false,
@@ -44,17 +47,17 @@ class Post extends Component{
   
   
   doPost(){
-    let {title,catagory,keys,content} = this.state;
-    title='123'
-    content = 'a;lgje;rgkj;ihjr;hkajg;aserjg; kgslfijsrtg'
-    catagory = '456456'
-    keys = ['as','eh']
+    let {title,catagory,tags} = this.props.post;
+    let content = this.editor.getMarkdown();
+
+    console.log(title,catagory,tags,content)
+
     fetch('http://localhost:10000/blog/article/post',{
       headers:{
          'Content-Type': 'application/json'
       },
       body:JSON.stringify({
-        title,content,catagory,keys
+        title,content,catagory,tags
       }),
       method:'POST',
       mode:'cors'
@@ -65,11 +68,27 @@ class Post extends Component{
     });
   }
 
+  handleTitleChange(e){
+    this.props.updatePostData({title:e.target.value})
+  }
+  handleCatagoryChange(value){
+    this.props.updatePostData({catagory:value})
+  }
+  handleTagsChange(e){
+    this.props.updatePostData({tags:e.value})
+  }
   render(){
+
+    let {title,catagory,tags,content} = this.props.post
+
+
+
+    console.log(title,catagory,tags,content,this.props)
+
     return (
       <Layout id={'post'} className={'page-wrap p-24'}>
         <Layout.Header className={"flex-row flex-line-center"}>
-          <Input className={'art-title mr-24 flex-1'} placeholder={"新文章标题……"}/>
+          <Input className={'art-title mr-24 flex-1'} placeholder={"新文章标题……"} value={title} onChange={this.handleTitleChange}/>
           <AutoComplete
             className={'flex-1 mr-24'}
             options={[{value:'ThinkPHP'},{value:'NodeJS'},{value:'Python'},{value:'MySQL'},{value:'Go'}]}
@@ -77,13 +96,15 @@ class Post extends Component{
             filterOption={(inputValue, option) =>
               option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
             }
+            value={catagory}
+            onChange={this.handleCatagoryChange}
           />
-          <TagsInput className={'flex-1 mr-24'} tags={['node','java', 'python']}/>
+          <TagsInput className={'flex-1 mr-24'} tags={tags} onChange={this.handleTagsChange}/>
           
           <Button type={'primary'} onClick={this.doPost} ><PostIcon className={'icon mr-5'}/> 发布</Button>
         </Layout.Header>
         <Layout.Content>
-          <div id="editor">1242323agsafg</div>
+          <div id="editor"></div>
         </Layout.Content>
         <Layout.Footer className={'hor-center'}>
           Chiang © {(new Date()).getFullYear()}
@@ -93,10 +114,7 @@ class Post extends Component{
   }
 }
 export default connect(({post})=>({post}),(dispatch)=>({
-  doPost:(data)=>{
-    dispatch({type:actions.POST_ARTICLE,...data})
-  },
-  changeTitle:(title)=>{
-    dispatch({type:actions.UPDATE_POST_DATA,title})
+  updatePostData:(args)=>{
+    dispatch({type:actions.UPDATE_POST_DATA,...args})
   }
 }))(Post);
