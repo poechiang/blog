@@ -1,5 +1,5 @@
 import React,{Component} from "react";
-import {Layout,Input, Button,AutoComplete} from "antd";
+import {Layout,Input, Button,AutoComplete,message,Modal,Form} from "antd";
 
 import {PostIcon} from "../asserts/RC";
 import TagsInput from "../components/TagsInput";
@@ -50,7 +50,6 @@ class Post extends Component{
     let {title,catagory,tags} = this.props.post;
     let content = this.editor.getMarkdown();
 
-    console.log(title,catagory,tags,content)
 
     fetch('http://localhost:10000/blog/article/post',{
       headers:{
@@ -64,7 +63,10 @@ class Post extends Component{
     })
     .then((resp)=>(resp.json()))
     .then((resp)=>{
-      console.log(resp)
+        if(resp.code!==200){
+            return message('笔记保存失败','error')
+        }
+        this.props.history.replace('/')
     });
   }
 
@@ -89,22 +91,39 @@ class Post extends Component{
       <Layout id={'post'} className={'page-wrap p-24'}>
         <Layout.Header className={"flex-row flex-line-center"}>
           <Input className={'art-title mr-24 flex-1'} placeholder={"新文章标题……"} value={title} onChange={this.handleTitleChange}/>
-          <AutoComplete
-            className={'flex-1 mr-24'}
-            options={[{value:'ThinkPHP'},{value:'NodeJS'},{value:'Python'},{value:'MySQL'},{value:'Go'}]}
-            placeholder='选择已有专题或输入新专题名称……'
-            filterOption={(inputValue, option) =>
-              option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
-            }
-            value={catagory}
-            onChange={this.handleCatagoryChange}
-          />
-          <TagsInput className={'flex-1 mr-24'} tags={tags} onChange={this.handleTagsChange}/>
+
+
           
           <Button type={'primary'} onClick={this.doPost} ><PostIcon className={'icon mr-5'}/> 发布</Button>
         </Layout.Header>
         <Layout.Content>
           <div id="editor"></div>
+          <Modal
+            title="保存笔记"
+            centered
+            visible={true}
+            onOk={() => this.setModal2Visible(false)}
+            onCancel={() => this.setModal2Visible(false)}
+          >
+            <Form layout={'vertical'}
+                  >
+                    <Form.Item label="主题 / 分组" name="layout">
+                      <AutoComplete
+                          options={[{value:'ThinkPHP'},{value:'NodeJS'},{value:'Python'},{value:'MySQL'},{value:'Go'}]}
+                          placeholder='选择已有专题或输入新专题名称……'
+                          filterOption={(inputValue, option) =>
+                            option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1
+                          }
+                          value={catagory}
+                          onChange={this.handleCatagoryChange}
+                        />
+                    </Form.Item>
+                    <Form.Item label="标签">
+                      <TagsInput tags={tags} onChange={this.handleTagsChange}/>
+                      
+                    </Form.Item>
+                  </Form>
+          </Modal>
         </Layout.Content>
         <Layout.Footer className={'hor-center'}>
           Chiang © {(new Date()).getFullYear()}
