@@ -4,21 +4,31 @@ import {Layout,Input, Button,AutoComplete,message,Modal,Form} from "antd";
 import {PostIcon} from "../asserts/RC";
 import TagsInput from "../components/TagsInput";
 import { connect } from "react-redux";
-import actions from "../lib/redux/Action";
+import actions from "../lib/Action";
 
 const {editormd} = window
 
 class Post extends Component{
   constructor(props) {
     super(props);
-    this.state = {contentShown:true};
+    if(props.post){
+        this.state = {...props.post};
+    }
+    else{
+        this.state = {}
+    }
     this.doPost = this.doPost.bind(this);
     this.handleTitleChange = this.handleTitleChange.bind(this);
     this.handleCatagoryChange = this.handleCatagoryChange.bind(this);
     this.handleTagsChange = this.handleTagsChange.bind(this);
   }
   componentDidMount() {
-    
+
+    fetch('http://localhost:1000/blog/cata/list')
+    .then((resp)=>(resp.json))
+    .then((resp)=>{
+
+    })
     this.editor = editormd('editor',{
       theme:'dark',
       editorTheme:'monokai',
@@ -47,7 +57,7 @@ class Post extends Component{
   
   
   doPost(){
-    let {title,catagory,tags} = this.props.post;
+    let {title,catagory,tags} = this.state;
     let content = this.editor.getMarkdown();
 
 
@@ -71,17 +81,17 @@ class Post extends Component{
   }
 
   handleTitleChange(e){
-    this.props.updatePostData({title:e.target.value})
+    this.setState({title:e.target.value})
   }
   handleCatagoryChange(value){
-    this.props.updatePostData({catagory:value})
+    this.setState({catagory:value})
   }
   handleTagsChange(e){
-    this.props.updatePostData({tags:e.value})
+    this.setState({tags:e.value})
   }
   render(){
 
-    let {title,catagory,tags,content} = this.props.post
+    let {title,catagory,tags,content} = this.state;
 
 
 
@@ -103,10 +113,8 @@ class Post extends Component{
             centered
             visible={true}
             onOk={() => this.setModal2Visible(false)}
-            onCancel={() => this.setModal2Visible(false)}
-          >
-            <Form layout={'vertical'}
-                  >
+            onCancel={() => this.setModal2Visible(false)}>
+            <Form layout={'vertical'}>
                     <Form.Item label="主题 / 分组" name="layout">
                       <AutoComplete
                           options={[{value:'ThinkPHP'},{value:'NodeJS'},{value:'Python'},{value:'MySQL'},{value:'Go'}]}
@@ -133,7 +141,12 @@ class Post extends Component{
   }
 }
 export default connect(({post})=>({post}),(dispatch)=>({
-  updatePostData:(args)=>{
-    dispatch({type:actions.UPDATE_POST_DATA,...args})
+  updatePostData:(data)=>{
+    if(data){
+        dispatch({type:actions.UPDATE_POST_DATA,...data})
+    }
+    else{
+        dispatch({type:actions.CLEAR_POST_DATA,...data})
+    }
   }
 }))(Post);

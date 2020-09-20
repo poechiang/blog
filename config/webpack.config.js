@@ -116,7 +116,8 @@ module.exports = function(webpackEnv) {
             modifyVars: {
               'primary-color': '#61DAFB',
               'link-color': '#61DAFB',
-              'body-background':'#282C34'
+              'body-background':'#282C34',
+              '@btn-primary-color': '#282d33'
             },
             javascriptEnabled: true
           }

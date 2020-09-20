@@ -22,6 +22,8 @@ const post = (state={},action)=>{
     case actions.UPDATE_POST_DATA:
       let {type,...data} = action;
       return Object.assign({},state,data)
+    case actions.CLEAR_POST_DATA:
+      return {}
     default:
       return state;
   }

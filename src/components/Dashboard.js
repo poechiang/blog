@@ -7,7 +7,7 @@ const size = 16;
 const days = 7*53;
 const offsetX = 40;
 const offsetY=20;
-const getTempPoints = ()=>{
+const getTempPoints = (points)=>{
   let data = [];
   let
     now = new Date(),
@@ -23,7 +23,8 @@ const getTempPoints = ()=>{
   start.setDate(start.getDate()-weekStart)
   
   for(let i =0;i<days;i++){
-    data.push({date:new Date(start.toDateString()),detail:i < weekStart || i>=days-(6-weekEnd)?-1:(Math.random() * 21)})
+    const dt = start.toDateString();
+    data.push({date:new Date(dt),detail:i < weekStart || i>=days-(6-weekEnd)?-1:(points?(points[dt]||0):Math.random() * 21)})
     start.setDate(start.getDate()+1)
   }
   return data;
@@ -36,19 +37,19 @@ const Tip = ({msg,desc}) => (
 )
 const Point = ({value,...props})=> {
   let key = 0;
-  if(value.detail>18){
+  if(value.detail>7){
     key=5;
   }
-  else if (value.detail>19){
+  else if (value.detail>5){
     key=4;
   }
-  else if (value.detail>16){
+  else if (value.detail>3){
     key=3;
   }
-  else if (value.detail>12){
+  else if (value.detail>1){
     key=2;
   }
-  else if (value.detail>8){
+  else if (value.detail>0){
     key=1;
   }
   else if (value.detail<0){
@@ -73,9 +74,9 @@ const Months = ({points})=>{
     index===0 || item.date.getDate()===1?<text y={12} x={offsetX+(size+1)*Math.floor(index/7)} key={index}>{['Lib', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][item.date.getMonth()]}</text>:null
   ))
 }
-export default connect(({points})=>({points}))(({className,points})=>{
-  points = points || getTempPoints();
-  return (<svg className={className} style={{width:offsetX+(size+1)*53}}>
+export default connect()(({className,points})=>{
+  points =  getTempPoints(points);
+  return (<svg className={className} style={{width:offsetX+(size+1)*53+16}}>
     <g fill={'#61DAFB'} fontSize={fontSize} style={{textAnchor: "end"}}>
       {<Weeks/>}
     </g>

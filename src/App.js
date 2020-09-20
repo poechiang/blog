@@ -1,16 +1,21 @@
 import React from 'react';
+import { BrowserRouter ,Route,Switch} from 'react-router-dom';
 
-import history,{ Router, Route } from './lib/Router';
+import Home from "./pages/Home";
+import Article from "./pages/Article";
+import About from "./pages/About";
+import Post from "./pages/Post";
+import NotFound from "./pages/NotFound";
 
-import {Home,Article,About,Post} from './Pages';
 
 const App = () => (
-  <Router history={history}>
+  <BrowserRouter><Switch>
     <Route path='/' exact component={Home}/>
-    <Route path='/article' component={Article} />
-    <Route path='/post' component={Post} />
-    <Route path='/about' component={About} />
-  </Router>
+    <Route path='/articles/:aid' component={Article} />
+    <Route path='/post' exact component={Post} />
+    <Route path='/about' exact component={About} />
+    <Route path='*' component={NotFound} />
+  </Switch></BrowserRouter>
 )
 
 export default App;

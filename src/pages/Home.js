@@ -1,11 +1,60 @@
 import React,{Component} from "react";
-import {Layout,Avatar,Descriptions,Tag,Tabs,Timeline,Button} from "antd";
+import {Layout,Avatar,Descriptions,Tag,Tabs,Timeline,Button,message} from "antd";
 import {LocIcon, BirthIcon,UserIcon,LinkIcon,NotifyIcon,MailIcon,TagIcon} from '../asserts/RC'
+import fetch from '../lib/Fetch';
 import Dashboard from "../components/Dashboard";
+import TagList from "../components/TagList";
 
 
 class Home extends Component{
+  constructor(props){
+    super(props);
+    this.state={};
+  }
+  componentDidMount(){
+    fetch('blog/article').then((resp)=>{
+        if(resp.code!==200){
+            return message.error(resp.msg);
+        }
+        this.setState({articles:resp.data})
+    })
+
+    fetch('blog/article/tags').then((resp)=>{
+        if(resp.code!==200){
+            return message.error(resp.msg);
+        }
+        this.setState({tags:resp.data})
+    })
+
+    fetch('blog/activity').then((resp)=>{
+        if(resp.code!==200){
+            return message.error(resp.msg);
+        }
+        let activities = {};
+        let years = [(new Date()).getFullYear()];
+        (resp.data||[]).forEach(({date,count})=>{
+            const dt = new Date(Date.parse(date))
+            const day = dt.toDateString();
+            const year = dt.getFullYear();
+            if(years.indexOf(year)<0){
+                years.push(year)
+            }
+            if(!activities[year]){
+                activities[year]={}
+            }
+            activities[year][day] = count
+        })
+
+        years.sort()
+
+        years = years.reverse()
+        console.log(years)
+        this.setState({activities,years})
+    })
+  }
   render(){
+    const {articles,tags,activities,years=[]} = this.state;
+
     return (
       <Layout id={'home'} className={'page-wrap p-24'}>
         <Layout>
@@ -24,16 +73,7 @@ class Home extends Component{
               {/*<Descriptions.Item label={<GitIcon/>}><a href="https://github.com/poechiang" target={'_blank'} rel={'noopener noreferrer'}>https://github.com/poechiang</a></Descriptions.Item>*/}
               <Descriptions.Item label={<LinkIcon/>}><a href="https://github.com/poechiang" target={'_blank'} rel={'noopener noreferrer'}>https://github.com/poechiang</a></Descriptions.Item>
               <Descriptions.Item label={<TagIcon/>}>
-                <Tag color="cyan">Javascript</Tag>
-                <Tag color="cyan">React</Tag>
-                <Tag color="cyan">Redux</Tag>
-                <Tag color="cyan">Electron</Tag>
-                <Tag color="cyan">React-Intl</Tag>
-                <Tag color="cyan">PHP</Tag>
-                <Tag color="cyan">Go</Tag>
-                <Tag color="cyan">Vue</Tag>
-                <Tag color="cyan">AntD</Tag>
-                <Tag color="cyan">Python</Tag>
+                {(tags||[]).map((item,index)=>(<Tag color="cyan" key={index}>{item.tag}</Tag>))}
               </Descriptions.Item>
               <Descriptions.Item label={<NotifyIcon/>}>
                 此生尽兴，赤诚善良
@@ -44,33 +84,23 @@ class Home extends Component{
             <header className={'dashboard'}>
               <h2>Activities</h2>
               <Tabs className={'mv-24'} tabPosition={'right'}>
-                <Tabs.TabPane tab="2020" key="1">
-                  <Dashboard />
-                </Tabs.TabPane>
-                <Tabs.TabPane tab="2019" key="2">
-                  <Dashboard/>
-                </Tabs.TabPane>
-                <Tabs.TabPane tab="2018" key="3">
-                  <Dashboard/>
-                </Tabs.TabPane>
+                {years.map((year)=>(
+                    <Tabs.TabPane tab={year} key={year}>
+                      <Dashboard points = {activities[year]}/>
+                    </Tabs.TabPane>
+                ))}
               </Tabs>
             </header>
             <article className={'articles mt-48 mb-24'}>
               <div className={'flex-row flex-main-between'}><h2>Article List</h2> <Button type={'primary'} ref={'post'} href={"/post"}>发布</Button></div>
               <Timeline mode={'left'} className={'mt-24'}>
-                <Timeline.Item label="2015-09-01">
-                  <h3 className={'mb-24'}>如何使用tspan元素给SVG文本添加样式、定位_SVG Text, SVG 教程...</h3>
-                  <p>2015年12月24日 - SVG的``元素允许你很简单地定位和给文本添加样式,但是如果你想要针对文本的不同部分定位和添加样式呢?难道我们要去创建多个`text`元素吗?不需要的。有更简单的...</p>
-                </Timeline.Item>
-                <Timeline.Item label="2015-09-01 09:12:11">
-                  <h3 className={'mb-24'}>javascript - svg中text的y的定位和html中的top不一致</h3>
-                  <p>2018年1月23日 - 上面的是通过y控制的&lt;text&gt;,下面是top控制的&lt;p&gt;. 通过观察好像前者是根据底部来定位, 后者是根据顶部, 请问如何让&lt;text&gt;也根据顶部...</p>
-                </Timeline.Item>
-                <Timeline.Item label="2015-09-01 09:12:11">
-                  <h3 className={'mb-24'}>Node.js 教程 - 基础环境搭建</h3>
-                  <aside className={'f-right ml-24'}><img src={"static/images/node.jpg"} alt=""/></aside>
-                  <p>Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型,使其轻量又高效。Node.js 的包管理器 npm,...</p>
-                </Timeline.Item>
+                {(articles||[]).map((art)=>(
+                    <Timeline.Item label={art.insert_date} key={art.id}>
+                                      <h3 className={'mb-8'}><a href={`articles/${art.id}`}>{art.title}</a></h3>
+                                      <aside><TagList tags = {!art.tags?[]:art.tags.split(',')}/></aside>
+                                      <p className={'mt-16'}>{art.content.length>200?(art.content.substring(0,200)+'...'):art.content}</p>
+                                    </Timeline.Item>
+                ))}
               </Timeline>
             </article>
           </Layout.Content>

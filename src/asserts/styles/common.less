@@ -257,6 +257,31 @@ each(@floats,{
 
 }
 
+.fs-small2{
+    font-size:.12rem
+}
+
+.fs-small{
+    font-size:.14rem;
+}
+.fs-normal{
+    font-size:.16rem;
+}
+
+.fs-large{
+    font-size:.18rem
+}
+
+.fs-large2{
+    font-size:.2rem;
+}
+
+
+each(range(12,40),{
+.fs-@{value} {
+  font-size:(@value / 100rem);
+}
+})
 
 input:not([type="radio"]):not([type="checkbox"]):not([type="button"]):not([type="submit"]):not([type="reset"]) {
   border-color: transparent;
